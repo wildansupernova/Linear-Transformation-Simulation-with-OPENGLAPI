@@ -12,6 +12,7 @@ import math
 
 import transform
 import setup_opengl
+import interface
 
 ######################################      SETTING OPENGL      #############################################
 
@@ -26,12 +27,6 @@ def draw():
     setup_opengl.refresh2d(width, height)
 
     glColor3f(0.498039, 1, 0)
-    for i in range(-height/2,height/2,scale):
-        if i!=0 :
-            setup_opengl.drawhorizon(width,i)
-    for i in range(-width/2,width/2,scale):
-        if i!=0 :
-            setup_opengl.drawvertical(height,i)
     glColor3f(1, 1, 1)
     
     glLineWidth(4)
@@ -42,6 +37,7 @@ def draw():
     if status=='exit':      # exit openGL
         sys.exit()
     
+    glColor3f(0.5, 1, 0)
     setup_opengl.drawpoly(temptitik)     # menggambar titik-titik pada bidang
     glutSwapBuffers()                                  
 
@@ -68,11 +64,9 @@ class windowOpenGl(threading.Thread):
 
 kumpulantitik = []      # list of titik dari inputan user
 temptitik = []          # salinan dari kumpulan titik 
-kAnim = 0.001
-tAnim = 0.001
 status = 'nothing'
 
-##################################      MENU PENGGUNA      ##################################
+##################################      PROCEDURE MENU PENGGUNA      ########################################
 
 def prosesInput(masukan1,temptitik):
     masukan = masukan1.split()
@@ -97,17 +91,11 @@ def prosesInput(masukan1,temptitik):
 
 ##################################     PROGRAM UTAMA     #############################################
 
+interface.opening()
 
-#Salam Pembuka
-print(' _______  __   __  _______  _______  _______    _______  _______  _______  _______  ______        _______  ___      _______  _______  _______ ')
-print('|       ||  | |  ||       ||   _   ||       |  |  _    ||       ||       ||   _   ||    _ |      |   _   ||   |    |       ||       ||       |')
-print('|_     _||  | |  ||    ___||  |_|  ||  _____|  | |_|   ||    ___||  _____||  |_|  ||   | ||      |  |_|  ||   |    |    ___||    ___||   _   |')
-print('  |   |  |  |_|  ||   | __ |       || |_____   |       ||   |___ | |_____ |       ||   |_||_     |       ||   |    |   | __ |   |___ |  | |  |')
-print('  |   |  |       ||   ||  ||       ||_____  |  |  _   | |    ___||_____  ||       ||    __  |    |       ||   |___ |   ||  ||    ___||  |_|  |')
-print('  |   |  |       ||   |_| ||   _   | _____| |  | |_|   ||   |___  _____| ||   _   ||   |  | |    |   _   ||       ||   |_| ||   |___ |       |')
-print('  |___|  |_______||_______||__| |__||_______|  |_______||_______||_______||__| |__||___|  |_|    |__| |__||_______||_______||_______||_______|')
-print('by Wildan Dicky Alnatara (13516012) dan Dion Saputra (13516045)')
 n = input('Berapa banyak titik : ')
+print('')
+print('Input titik dengan format <x,y>')
 
 # simpan titik di kumpulantitik
 for i in range(1,n+1):
@@ -127,25 +115,30 @@ thread1 = windowOpenGl(1, "Thread-1", 1)
 thread1.daemon = True
 thread1.start()
 
+interface.menu()
+
 # terima perintah user
-print('Masukkan input : ')
+print('Masukkan perintah : ')
 
 inp = raw_input()
 while(inp!='exit'):
     masukan = inp.split()
-    if masukan[0]=='kanim':
-        kAnim = input('Masukkan angkanya : ')
-    elif masukan[0]=='tanim':
-        tAnim = input('Masukkan angkanya : ')
-    elif masukan[0]=='status':
+    if masukan[0]=='status':
         print(temptitik)
     elif masukan[0]!='multiple':
         prosesInput(inp,temptitik)
     elif masukan[0]=='multiple':
         listperintah=[]
-        for i in range(0,int(masukan[1])):
-            inp2=raw_input()
-            listperintah.append(inp2)
+        i = 0
+        while (i < int(masukan[1])) :
+            inp2 = raw_input()
+            inp3 = inp2.split()
+            if (inp3[0]=='multiple' or inp3[0]=='reset' or inp3[0]=='exit'):
+                print('multiple tidak boleh mengandung perintah multiple, reset, atau exit')
+            else :
+                listperintah.append(inp2)
+                i = i+1
+            
         for imp in listperintah:
             prosesInput(imp,temptitik)
     else :

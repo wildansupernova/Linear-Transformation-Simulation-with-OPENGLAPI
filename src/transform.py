@@ -77,12 +77,15 @@ def translate2D(tempPoint,transX,transY):
 # dilatasi temppoint sesuai besar dilatasinya dan menganimasikannya
 def dilate2D(tempPoint,scaleFactor):
     k = scaleFactor
-    MDilate = [[k,0],[0,k]]
-    finalPoint = []
-    for i in tempPoint:
-        temp = multiMatrixArray(MDilate,i)
-        finalPoint.append(temp)
-    animate(tempPoint,finalPoint)
+    if (k>1) :
+    	MDilate = [[k,0],[0,k]]
+    	finalPoint = []
+    	for i in tempPoint:
+        	temp = multiMatrixArray(MDilate,i)
+        	finalPoint.append(temp)
+    	animate(tempPoint,finalPoint)
+    else :
+    	print('Faktor skala dilatasi > 1')
 
 # menerima temppoint (titik2 sebelum transformasi), degree (derajat perputaran counterclockwise), XCenter, YCenter (Titik rotasi)
 # rotasi temppoint sesuai besar rotasinya dan menganimasikannya
